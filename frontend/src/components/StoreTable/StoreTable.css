@@ -1,0 +1,45 @@
+.store-table-card{
+background:#fff;
+margin-top:25px;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+overflow:auto;
+}
+
+.store-table-card table{
+width:100%;
+border-collapse:collapse;
+}
+
+.store-table-card th{
+text-align:left;
+padding:18px;
+font-size:14px;
+color:#6b7280;
+border-bottom:1px solid #eee;
+}
+
+.store-table-card td{
+padding:18px;
+border-bottom:1px solid #f3f4f6;
+}
+
+.store-info{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.store-avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+background:#2563eb;
+display:flex;
+justify-content:center;
+align-items:center;
+color:white;
+font-weight:600;
+font-size:18px;
+}

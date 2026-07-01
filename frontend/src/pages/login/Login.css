@@ -1,0 +1,443 @@
+/* ===========================
+   LOGIN PAGE
+=========================== */
+
+.login-page {
+  display: flex;
+  min-height: 100vh;
+  background: #eef3fb;
+  overflow: hidden;
+}
+
+/* ===========================
+   LEFT PANEL
+=========================== */
+
+.login-left {
+  flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 80px;
+  color: white;
+  overflow: hidden;
+
+  background: linear-gradient(
+      135deg,
+      #1e3a8a,
+      #2563eb,
+      #3b82f6
+  );
+
+  background-size: 300% 300%;
+
+  animation: gradientMove 12s ease infinite;
+}
+
+@keyframes gradientMove {
+
+    0%{
+        background-position:0% 50%;
+    }
+
+    50%{
+        background-position:100% 50%;
+    }
+
+    100%{
+        background-position:0% 50%;
+    }
+
+}
+
+/* Floating Circles */
+
+.login-left::before{
+
+content:"";
+
+position:absolute;
+
+width:380px;
+height:380px;
+
+border-radius:50%;
+
+background:rgba(255,255,255,.08);
+
+top:-120px;
+right:-100px;
+
+filter:blur(10px);
+
+animation:float1 8s ease-in-out infinite;
+
+}
+
+.login-left::after{
+
+content:"";
+
+position:absolute;
+
+width:250px;
+height:250px;
+
+border-radius:50%;
+
+background:rgba(255,255,255,.07);
+
+bottom:-70px;
+left:-70px;
+
+animation:float2 10s ease-in-out infinite;
+
+}
+
+@keyframes float1{
+
+50%{
+
+transform:translateY(20px);
+
+}
+
+}
+
+@keyframes float2{
+
+50%{
+
+transform:translateY(-20px);
+
+}
+
+}
+
+.brand{
+
+max-width:520px;
+
+z-index:2;
+
+}
+
+.brand-logo{
+
+width:95px;
+height:95px;
+
+border-radius:28px;
+
+background:rgba(255,255,255,.15);
+
+backdrop-filter:blur(15px);
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+font-size:44px;
+
+margin-bottom:35px;
+
+box-shadow:0 20px 50px rgba(0,0,0,.18);
+
+}
+
+.brand h1{
+
+font-size:52px;
+
+font-weight:700;
+
+line-height:1.15;
+
+margin-bottom:20px;
+
+}
+
+.brand p{
+
+font-size:19px;
+
+line-height:1.8;
+
+opacity:.95;
+
+margin-bottom:45px;
+
+}
+
+.features{
+
+display:flex;
+
+flex-direction:column;
+
+gap:24px;
+
+}
+
+.feature{
+
+display:flex;
+
+align-items:center;
+
+gap:18px;
+
+font-size:18px;
+
+padding:12px 18px;
+
+border-radius:14px;
+
+background:rgba(255,255,255,.10);
+
+backdrop-filter:blur(8px);
+
+transition:.35s;
+
+}
+
+.feature:hover{
+
+transform:translateX(8px);
+
+background:rgba(255,255,255,.18);
+
+}
+
+.feature svg{
+
+font-size:22px;
+
+}
+
+/* ===========================
+   RIGHT PANEL
+=========================== */
+
+.login-right{
+
+flex:1;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+padding:40px;
+
+background:#f8fbff;
+
+}
+
+.login-card{
+
+width:100%;
+max-width:470px;
+
+padding:50px;
+
+background:rgba(255,255,255,.85);
+
+backdrop-filter:blur(16px);
+
+border:1px solid rgba(255,255,255,.6);
+
+border-radius:28px;
+
+box-shadow:
+0 30px 70px rgba(37,99,235,.12);
+
+}
+
+.login-card h2{
+
+font-size:42px;
+
+margin-bottom:10px;
+
+color:#0f172a;
+
+}
+
+.subtitle{
+
+color:#64748b;
+
+margin-bottom:35px;
+
+font-size:17px;
+
+}
+
+/* ===========================
+   INPUTS
+=========================== */
+
+.input-group{
+
+margin-bottom:24px;
+
+}
+
+.input-group label{
+
+display:block;
+
+margin-bottom:8px;
+
+font-weight:600;
+
+color:#1e293b;
+
+}
+
+.input-wrapper{
+
+position:relative;
+
+}
+
+.input-icon{
+
+position:absolute;
+
+top:50%;
+
+left:18px;
+
+transform:translateY(-50%);
+
+color:#64748b;
+
+}
+
+.input-wrapper input{
+
+width:100%;
+
+height:58px;
+
+padding-left:50px;
+
+padding-right:50px;
+
+border-radius:14px;
+
+border:1px solid #dbe4ef;
+
+background:white;
+
+font-size:15px;
+
+transition:.35s;
+
+}
+
+.input-wrapper input:focus{
+
+outline:none;
+
+border-color:#2563eb;
+
+box-shadow:0 0 0 5px rgba(37,99,235,.15);
+
+}
+
+.password-toggle{
+
+position:absolute;
+
+right:18px;
+
+top:50%;
+
+transform:translateY(-50%);
+
+border:none;
+
+background:none;
+
+cursor:pointer;
+
+font-size:18px;
+
+color:#64748b;
+
+}
+
+/* ===========================
+   REGISTER
+=========================== */
+
+.register-link{
+
+text-align:center;
+
+margin-top:30px;
+
+font-size:15px;
+
+color:#64748b;
+
+}
+
+.register-link a{
+
+margin-left:6px;
+
+color:#2563eb;
+
+font-weight:600;
+
+}
+
+.register-link a:hover{
+
+text-decoration:underline;
+
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media(max-width:960px){
+
+.login-left{
+
+display:none;
+
+}
+
+.login-right{
+
+width:100%;
+
+padding:25px;
+
+}
+
+.login-card{
+
+padding:35px;
+
+}
+
+.brand h1{
+
+font-size:38px;
+
+}
+
+.login-card h2{
+
+font-size:34px;
+
+}
+
+}

@@ -7,6 +7,15 @@ import {
   getDashboardStats,
   getAllUsers,
   getAllStores,
+  getUserById,
+  updateUserById,
+  deleteUserById,
+  getStoreOwners,
+
+  // Store CRUD
+  getStoreById,
+  updateStoreById,
+  deleteStoreById,
 } from "../repositories/admin.repository.js";
 
 // =========================
@@ -68,7 +77,6 @@ export const fetchUsers = async (query) => {
     limit = 10,
   } = query;
 
-  // Allowed sorting fields
   const allowedSortFields = [
     "id",
     "name",
@@ -77,12 +85,10 @@ export const fetchUsers = async (query) => {
     "role",
   ];
 
-  // Validate sortBy
   const sortBy = allowedSortFields.includes(query.sortBy)
     ? query.sortBy
     : "id";
 
-  // Validate order
   const order =
     query.order?.toUpperCase() === "DESC"
       ? "DESC"
@@ -110,7 +116,6 @@ export const fetchStores = async (query) => {
     limit = 10,
   } = query;
 
-  // Allowed sorting fields
   const allowedSortFields = [
     "id",
     "name",
@@ -119,12 +124,10 @@ export const fetchStores = async (query) => {
     "rating",
   ];
 
-  // Validate sortBy
   const sortBy = allowedSortFields.includes(query.sortBy)
     ? query.sortBy
     : "id";
 
-  // Validate order
   const order =
     query.order?.toUpperCase() === "DESC"
       ? "DESC"
@@ -139,4 +142,91 @@ export const fetchStores = async (query) => {
     Number(limit),
     Number(offset)
   );
+};
+
+// =========================
+// Get Store Owners
+// =========================
+export const fetchStoreOwners = async () => {
+  return await getStoreOwners();
+};
+
+// =========================
+// Get User By ID
+// =========================
+export const fetchUserById = async (id) => {
+  const user = await getUserById(id);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return user;
+};
+
+// =========================
+// Update User
+// =========================
+export const editUser = async (id, data) => {
+  const {
+    name,
+    email,
+    address,
+    role,
+  } = data;
+
+  return await updateUserById(
+    id,
+    name,
+    email,
+    address,
+    role
+  );
+};
+
+// =========================
+// Delete User
+// =========================
+export const removeUser = async (id) => {
+  await deleteUserById(id);
+};
+
+// =========================
+// Get Store By ID
+// =========================
+export const fetchStoreById = async (id) => {
+  const store = await getStoreById(id);
+
+  if (!store) {
+    throw new Error("Store not found");
+  }
+
+  return store;
+};
+
+// =========================
+// Update Store
+// =========================
+export const editStore = async (id, data) => {
+  const {
+    name,
+    email,
+    address,
+    owner_id,
+  } = data;
+
+  return await updateStoreById(
+    id,
+    name,
+    email,
+    address,
+    owner_id
+  );
+};
+
+// =========================
+// Delete Store
+// =========================
+export const removeStore = async (id) => {
+  await deleteStoreById(id);
 };

@@ -1,0 +1,40 @@
+@import "../admin/users/Users.css";
+
+.store-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+gap:25px;
+margin-top:25px;
+}
+
+.store-card{
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.store-card h3{
+margin-bottom:12px;
+}
+
+.store-card p{
+color:#666;
+margin-bottom:8px;
+}
+
+.store-card h4{
+margin-top:18px;
+}
+
+.store-card button{
+margin-top:20px;
+width:100%;
+padding:12px;
+border:none;
+border-radius:12px;
+background:#2563eb;
+color:white;
+cursor:pointer;
+font-weight:600;
+}

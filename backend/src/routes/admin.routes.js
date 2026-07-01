@@ -5,7 +5,18 @@ import {
   createStore,
   dashboard,
   getUsers,
+  getUser,
   getStores,
+  updateUser,
+  deleteUser,
+
+  // Store CRUD
+  getStore,
+  updateStore,
+  deleteStore,
+
+  // Store Owners
+  getStoreOwners,
 } from "../controllers/admin.controller.js";
 
 import authMiddleware from "../middleware/auth.middleware.js";
@@ -24,30 +35,107 @@ router.post(
 );
 
 // =========================
-// Create Store
+// Update User
 // =========================
-router.post(
-  "/stores",
+router.put(
+  "/users/:id",
   authMiddleware,
   authorizeRoles("ADMIN"),
-  createStore
+  updateUser
 );
+
+// =========================
+// Delete User
+// =========================
+router.delete(
+  "/users/:id",
+  authMiddleware,
+  authorizeRoles("ADMIN"),
+  deleteUser
+);
+
+// =========================
+// Get User By ID
+// =========================
 router.get(
-  "/dashboard",
+  "/users/:id",
   authMiddleware,
   authorizeRoles("ADMIN"),
-  dashboard
+  getUser
 );
+
+// =========================
+// Get Users
+// =========================
 router.get(
   "/users",
   authMiddleware,
   authorizeRoles("ADMIN"),
   getUsers
 );
+
+// =========================
+// Get Store Owners
+// =========================
+router.get(
+  "/store-owners",
+  authMiddleware,
+  authorizeRoles("ADMIN"),
+  getStoreOwners
+);
+
+// ==================================================
+// STORE ROUTES
+// ==================================================
+
+// Create Store
+router.post(
+  "/stores",
+  authMiddleware,
+  authorizeRoles("ADMIN"),
+  createStore
+);
+
+// Get All Stores
 router.get(
   "/stores",
   authMiddleware,
   authorizeRoles("ADMIN"),
   getStores
 );
+
+// Get Store By ID
+router.get(
+  "/stores/:id",
+  authMiddleware,
+  authorizeRoles("ADMIN"),
+  getStore
+);
+
+// Update Store
+router.put(
+  "/stores/:id",
+  authMiddleware,
+  authorizeRoles("ADMIN"),
+  updateStore
+);
+
+// Delete Store
+router.delete(
+  "/stores/:id",
+  authMiddleware,
+  authorizeRoles("ADMIN"),
+  deleteStore
+);
+
+// =========================
+// Dashboard
+// =========================
+router.get(
+  "/dashboard",
+  authMiddleware,
+  authorizeRoles("ADMIN"),
+  dashboard
+);
+
 export default router;

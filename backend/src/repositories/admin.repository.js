@@ -28,7 +28,8 @@ export const createAdminUser = async (
 export const findUserByEmail = async (email) => {
   const result = await pool.query(
     `
-    SELECT * FROM users
+    SELECT *
+    FROM users
     WHERE email = $1
     `,
     [email]
@@ -57,6 +58,10 @@ export const createStore = async (
 
   return result.rows[0];
 };
+
+// =========================
+// Dashboard
+// =========================
 export const getDashboardStats = async () => {
   const totalUsers = await pool.query(
     "SELECT COUNT(*) FROM users"
@@ -76,6 +81,10 @@ export const getDashboardStats = async () => {
     totalRatings: Number(totalRatings.rows[0].count),
   };
 };
+
+// =========================
+// Get All Users
+// =========================
 export const getAllUsers = async (
   search,
   role,
@@ -85,7 +94,12 @@ export const getAllUsers = async (
   offset
 ) => {
   let query = `
-    SELECT id, name, email, address, role
+    SELECT
+      id,
+      name,
+      email,
+      address,
+      role
     FROM users
     WHERE 1=1
   `;
@@ -101,13 +115,16 @@ export const getAllUsers = async (
         OR address ILIKE $${index}
       )
     `;
+
     values.push(`%${search}%`);
     index++;
   }
 
   if (role) {
     query += ` AND role = $${index}`;
+
     values.push(role);
+
     index++;
   }
 
@@ -120,9 +137,11 @@ export const getAllUsers = async (
 
   const users = await pool.query(query, values);
 
-  // Total Count
+  // Count
+
   let countQuery = `
-    SELECT COUNT(*) FROM users
+    SELECT COUNT(*)
+    FROM users
     WHERE 1=1
   `;
 
@@ -137,22 +156,32 @@ export const getAllUsers = async (
         OR address ILIKE $${countIndex}
       )
     `;
+
     countValues.push(`%${search}%`);
+
     countIndex++;
   }
 
   if (role) {
     countQuery += ` AND role = $${countIndex}`;
+
     countValues.push(role);
   }
 
-  const total = await pool.query(countQuery, countValues);
+  const total = await pool.query(
+    countQuery,
+    countValues
+  );
 
   return {
     users: users.rows,
     total: Number(total.rows[0].count),
   };
 };
+
+// =========================
+// Get All Stores
+// =========================
 export const getAllStores = async (
   search,
   sortBy,
@@ -166,10 +195,18 @@ export const getAllStores = async (
       s.name,
       s.email,
       s.address,
+      s.owner_id,
+      u.name AS owner_name,
       COALESCE(ROUND(AVG(r.rating),2),0) AS rating
+
     FROM stores s
+
+    LEFT JOIN users u
+      ON s.owner_id = u.id
+
     LEFT JOIN ratings r
       ON s.id = r.store_id
+
     WHERE 1=1
   `;
 
@@ -182,6 +219,7 @@ export const getAllStores = async (
         s.name ILIKE $${index}
         OR s.email ILIKE $${index}
         OR s.address ILIKE $${index}
+        OR u.name ILIKE $${index}
       )
     `;
 
@@ -190,8 +228,16 @@ export const getAllStores = async (
   }
 
   query += `
-    GROUP BY s.id
+    GROUP BY
+      s.id,
+      s.name,
+      s.email,
+      s.address,
+      s.owner_id,
+      u.name
+
     ORDER BY ${sortBy} ${order}
+
     LIMIT $${index}
     OFFSET $${index + 1}
   `;
@@ -201,9 +247,16 @@ export const getAllStores = async (
 
   const stores = await pool.query(query, values);
 
-  // Count Query
+  // Count
+
   let countQuery = `
-    SELECT COUNT(*) FROM stores
+    SELECT COUNT(*)
+
+    FROM stores s
+
+    LEFT JOIN users u
+      ON s.owner_id = u.id
+
     WHERE 1=1
   `;
 
@@ -213,19 +266,216 @@ export const getAllStores = async (
   if (search) {
     countQuery += `
       AND (
-        name ILIKE $${countIndex}
-        OR email ILIKE $${countIndex}
-        OR address ILIKE $${countIndex}
+        s.name ILIKE $${countIndex}
+        OR s.email ILIKE $${countIndex}
+        OR s.address ILIKE $${countIndex}
+        OR u.name ILIKE $${countIndex}
       )
     `;
 
     countValues.push(`%${search}%`);
   }
 
-  const total = await pool.query(countQuery, countValues);
+  const total = await pool.query(
+    countQuery,
+    countValues
+  );
 
   return {
     stores: stores.rows,
     total: Number(total.rows[0].count),
   };
+};
+
+// =========================
+// Get User By ID
+// =========================
+export const getUserById = async (id) => {
+  const result = await pool.query(
+    `
+    SELECT
+      u.id,
+      u.name,
+      u.email,
+      u.address,
+      u.role,
+      COALESCE(ROUND(AVG(r.rating),2),0) AS rating
+
+    FROM users u
+
+    LEFT JOIN stores s
+      ON s.owner_id = u.id
+
+    LEFT JOIN ratings r
+      ON r.store_id = s.id
+
+    WHERE u.id = $1
+
+    GROUP BY
+      u.id,
+      u.name,
+      u.email,
+      u.address,
+      u.role
+    `,
+    [id]
+  );
+
+  return result.rows[0];
+};
+
+// =========================
+// Update User
+// =========================
+export const updateUserById = async (
+  id,
+  name,
+  email,
+  address,
+  role
+) => {
+  const result = await pool.query(
+    `
+    UPDATE users
+
+    SET
+      name=$1,
+      email=$2,
+      address=$3,
+      role=$4
+
+    WHERE id=$5
+
+    RETURNING id,name,email,address,role
+    `,
+    [name, email, address, role, id]
+  );
+
+  return result.rows[0];
+};
+
+// =========================
+// Delete User
+// =========================
+export const deleteUserById = async (
+  id
+) => {
+  await pool.query(
+    `
+    DELETE FROM users
+    WHERE id=$1
+    `,
+    [id]
+  );
+};
+
+// =========================
+// Get Store By ID
+// =========================
+export const getStoreById = async (id) => {
+  const result = await pool.query(
+    `
+    SELECT
+      s.id,
+      s.name,
+      s.email,
+      s.address,
+      s.owner_id,
+      u.name AS owner_name,
+      COALESCE(ROUND(AVG(r.rating),2),0) AS rating
+
+    FROM stores s
+
+    LEFT JOIN users u
+      ON s.owner_id = u.id
+
+    LEFT JOIN ratings r
+      ON s.id = r.store_id
+
+    WHERE s.id=$1
+
+    GROUP BY
+      s.id,
+      s.name,
+      s.email,
+      s.address,
+      s.owner_id,
+      u.name
+    `,
+    [id]
+  );
+
+  return result.rows[0];
+};
+
+// =========================
+// Update Store
+// =========================
+export const updateStoreById = async (
+  id,
+  name,
+  email,
+  address,
+  owner_id
+) => {
+  const result = await pool.query(
+    `
+    UPDATE stores
+
+    SET
+      name=$1,
+      email=$2,
+      address=$3,
+      owner_id=$4
+
+    WHERE id=$5
+
+    RETURNING *
+    `,
+    [
+      name,
+      email,
+      address,
+      owner_id,
+      id,
+    ]
+  );
+
+  return result.rows[0];
+};
+
+// =========================
+// Delete Store
+// =========================
+export const deleteStoreById = async (
+  id
+) => {
+  await pool.query(
+    `
+    DELETE FROM stores
+    WHERE id=$1
+    `,
+    [id]
+  );
+};
+
+// =========================
+// Get Store Owners
+// =========================
+export const getStoreOwners = async () => {
+  const result = await pool.query(
+    `
+    SELECT
+      id,
+      name
+
+    FROM users
+
+    WHERE role='STORE_OWNER'
+
+    ORDER BY name ASC
+    `
+  );
+
+  return result.rows;
 };

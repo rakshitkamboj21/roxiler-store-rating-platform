@@ -6,8 +6,13 @@ export const getOwnerDashboard = async (ownerId) => {
     SELECT
       s.id,
       s.name,
+      s.email,
+      s.address,
 
-      COALESCE(ROUND(AVG(r.rating),2),0) AS average_rating,
+      COALESCE(
+        ROUND(AVG(r.rating),2),
+        0
+      ) AS average_rating,
 
       json_agg(
         json_build_object(
@@ -15,19 +20,25 @@ export const getOwnerDashboard = async (ownerId) => {
           'email',u.email,
           'rating',r.rating
         )
-      ) FILTER (WHERE u.id IS NOT NULL) AS users
+      ) FILTER (
+        WHERE u.id IS NOT NULL
+      ) AS users
 
     FROM stores s
 
     LEFT JOIN ratings r
-      ON s.id=r.store_id
+      ON s.id = r.store_id
 
     LEFT JOIN users u
-      ON r.user_id=u.id
+      ON r.user_id = u.id
 
-    WHERE s.owner_id=$1
+    WHERE s.owner_id = $1
 
-    GROUP BY s.id
+    GROUP BY
+      s.id,
+      s.name,
+      s.email,
+      s.address
     `,
     [ownerId]
   );
