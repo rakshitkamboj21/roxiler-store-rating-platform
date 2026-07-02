@@ -17,7 +17,9 @@ import "./Sidebar.css";
 function Sidebar() {
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
 
   const panelName =
     user?.role === "ADMIN"
@@ -25,13 +27,6 @@ function Sidebar() {
       : user?.role === "STORE_OWNER"
       ? "Store Owner Panel"
       : "User Panel";
-
-  const roleName =
-    user?.role === "ADMIN"
-      ? "Administrator"
-      : user?.role === "STORE_OWNER"
-      ? "Store Owner"
-      : "User";
 
   const dashboardRoute =
     user?.role === "ADMIN"
@@ -59,8 +54,11 @@ function Sidebar() {
         </div>
 
         <div>
+
           <h2>Store Rating</h2>
+
           <p>{panelName}</p>
+
         </div>
 
       </div>
@@ -87,32 +85,27 @@ function Sidebar() {
             </Link>
           </>
         )}
+
         <Link to="/change-password">
-           <FaCog />
-            Change Password
-       </Link>
+          <FaCog />
+          Change Password
+        </Link>
 
       </nav>
 
-      {/* Logged in User */}
+      {/* Footer */}
 
-      <div className="sidebar-user">
+      <div className="sidebar-footer">
 
-        <strong>{user?.name}</strong>
-
-        <span>{roleName}</span>
+        <button
+          className="logout-btn"
+          onClick={handleLogout}
+        >
+          <FaSignOutAlt />
+          Logout
+        </button>
 
       </div>
-
-      {/* Logout */}
-
-      <button
-        className="logout-btn"
-        onClick={handleLogout}
-      >
-        <FaSignOutAlt />
-        Logout
-      </button>
 
     </aside>
   );

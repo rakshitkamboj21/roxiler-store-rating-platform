@@ -1,13 +1,20 @@
 /* eslint-disable react-hooks/immutability */
+
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+
 import {
   FaStar,
   FaUsers,
   FaStore,
+  FaEnvelope,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
+import StatsCard from "../../components/StatsCard/StatsCard";
+import Chart from "../../components/Chart/Chart";
 
 import { getOwnerDashboard } from "../../services/owner";
 
@@ -37,7 +44,7 @@ function Dashboard() {
         <div className="dashboard-content">
           <Navbar />
 
-          <h2>Loading...</h2>
+          <h2>Loading Dashboard...</h2>
         </div>
       </div>
     );
@@ -61,84 +68,158 @@ function Dashboard() {
 
         <div className="stats-grid">
 
-          <div className="stat-card">
-            <h4>
-              <FaStar /> Average Rating
-            </h4>
+  <StatsCard
+    title="Average Rating"
+    value={dashboard.average_rating}
+    icon={<FaStar />}
+    color="#F59E0B"
+  />
 
-            <h2>{dashboard.average_rating}</h2>
-          </div>
+  <StatsCard
+    title="Customers"
+    value={validUsers.length}
+    icon={<FaUsers />}
+    color="#10B981"
+  />
 
-          <div className="stat-card">
-            <h4>
-              <FaUsers /> Customers
-            </h4>
+  <StatsCard
+    title="Store Name"
+    value={dashboard.name}
+    icon={<FaStore />}
+    color="#2563EB"
+  />
 
-            <h2>{validUsers.length}</h2>
-          </div>
+</div>
 
-          <div className="stat-card">
-            <h4>
-              <FaStore /> My Store
-            </h4>
+        {/* Information + Chart */}
 
-            <h2>{dashboard.name}</h2>
-          </div>
+        <div className="owner-grid">
 
-        </div>
+          <motion.div
+            className="owner-card"
+            initial={{
+              opacity: 0,
+              y: 30,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: .5,
+            }}
+          >
 
-        {/* Store Information */}
+            <h2>
 
-        <div className="owner-card">
+              <FaStore />
 
-          <h2>Store Information</h2>
+              Store Information
 
-          <div className="owner-info">
+            </h2>
 
-            <p>
-              <strong>Store Name :</strong>{" "}
-              {dashboard.name}
-            </p>
+            <div className="owner-info">
 
-            <p>
-              <strong>Email :</strong>{" "}
-              {dashboard.email}
-            </p>
+              <div>
 
-            <p>
-              <strong>Address :</strong>{" "}
-              {dashboard.address}
-            </p>
+                <FaStore />
 
-            <p className="rating-value">
-              ⭐ Average Rating :{" "}
-              {dashboard.average_rating}
-            </p>
+                <span>
+                  {dashboard.name}
+                </span>
 
-          </div>
+              </div>
+
+              <div>
+
+                <FaEnvelope />
+
+                <span>
+                  {dashboard.email}
+                </span>
+
+              </div>
+
+              <div>
+
+                <FaMapMarkerAlt />
+
+                <span>
+                  {dashboard.address}
+                </span>
+
+              </div>
+
+              <div className="rating-row">
+
+                <FaStar />
+
+                <span>
+
+                  {dashboard.average_rating} / 5
+
+                </span>
+
+              </div>
+
+            </div>
+
+          </motion.div>
+
+          <Chart
+  owner={true}
+  totalUsers={validUsers.length}
+  totalRatings={validUsers.length}
+  averageRating={Number(
+    dashboard.average_rating
+  )}
+/>
 
         </div>
 
         {/* Ratings */}
 
-        <div className="ratings-card">
+        <motion.div
+          className="ratings-card"
+          initial={{
+            opacity: 0,
+            y: 40,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: .2,
+          }}
+        >
 
-          <h2>Customers Who Rated</h2>
+          <h2>
+
+            Customer Ratings
+
+          </h2>
 
           {validUsers.length === 0 ? (
 
             <div className="empty-state">
 
               <FaStar
-                size={40}
-                color="#f59e0b"
+                size={45}
+                color="#F59E0B"
               />
 
-              <h3>No Ratings Yet</h3>
+              <h3>
+
+                No Ratings Yet
+
+              </h3>
 
               <p>
-                Your customers haven't rated
-                your store yet.
+
+                Customers haven't rated your
+                store yet.
+
               </p>
 
             </div>
@@ -151,7 +232,7 @@ function Dashboard() {
 
                 <tr>
 
-                  <th>Name</th>
+                  <th>User</th>
 
                   <th>Email</th>
 
@@ -164,16 +245,47 @@ function Dashboard() {
               <tbody>
 
                 {validUsers.map(
-                  (user, index) => (
+                  (
+                    user,
+                    index
+                  ) => (
 
                     <tr key={index}>
 
-                      <td>{user.name}</td>
+                      <td>
 
-                      <td>{user.email}</td>
+                        <div className="customer">
+
+                          <div className="avatar">
+
+                            {user.name.charAt(0)}
+
+                          </div>
+
+                          <span>
+
+                            {user.name}
+
+                          </span>
+
+                        </div>
+
+                      </td>
 
                       <td>
-                        ⭐ {user.rating}/5
+
+                        {user.email}
+
+                      </td>
+
+                      <td>
+
+                        <span className="rating-badge">
+
+                          ⭐ {user.rating}/5
+
+                        </span>
+
                       </td>
 
                     </tr>
@@ -187,7 +299,7 @@ function Dashboard() {
 
           )}
 
-        </div>
+        </motion.div>
 
       </div>
 

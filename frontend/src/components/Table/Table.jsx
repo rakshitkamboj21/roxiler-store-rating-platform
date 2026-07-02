@@ -1,35 +1,34 @@
+import { useNavigate } from "react-router-dom";
+
 import "./Table.css";
 
-function Table() {
-  const users = [
-    {
-      id: 1,
-      name: "Rakshit",
-      email: "rakshit@gmail.com",
-      role: "ADMIN",
-    },
-    {
-      id: 2,
-      name: "John",
-      email: "john@gmail.com",
-      role: "STORE_OWNER",
-    },
-    {
-      id: 3,
-      name: "Demo User",
-      email: "demo@test.com",
-      role: "USER",
-    },
-  ];
+function Table({
+  users = [],
+}) {
+  const navigate = useNavigate();
 
   return (
     <div className="table-card">
 
       <div className="table-header">
 
-        <h2>Recent Users</h2>
+        <div>
 
-        <button>View All</button>
+          <h2>Recent Users</h2>
+
+          <p>
+            Latest registered users
+          </p>
+
+        </div>
+
+        <button
+          onClick={() =>
+            navigate("/admin/users")
+          }
+        >
+          View All
+        </button>
 
       </div>
 
@@ -39,7 +38,7 @@ function Table() {
 
           <tr>
 
-            <th>Name</th>
+            <th>User</th>
 
             <th>Email</th>
 
@@ -51,27 +50,62 @@ function Table() {
 
         <tbody>
 
-          {users.map((user) => (
+          {users.length > 0 ? (
 
-            <tr key={user.id}>
+            users.map((user) => (
 
-              <td>{user.name}</td>
+              <tr key={user.id}>
 
-              <td>{user.email}</td>
+                <td>
 
-              <td>
+                  <div className="user-cell">
 
-                <span className="role-badge">
+                    <div className="avatar">
 
-                  {user.role}
+                      {user.name.charAt(0)}
 
-                </span>
+                    </div>
 
+                    <span>
+                      {user.name}
+                    </span>
+
+                  </div>
+
+                </td>
+
+                <td>
+                  {user.email}
+                </td>
+
+                <td>
+
+                  <span
+                    className={`role-badge ${user.role.toLowerCase()}`}
+                  >
+                    {user.role}
+                  </span>
+
+                </td>
+
+              </tr>
+
+            ))
+
+          ) : (
+
+            <tr>
+
+              <td
+                colSpan="3"
+                className="empty-state"
+              >
+                No recent users found.
               </td>
 
             </tr>
 
-          ))}
+          )}
 
         </tbody>
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
 
 import Sidebar from "../../components/Sidebar/Sidebar";
@@ -23,25 +24,24 @@ function Dashboard() {
     totalStores: 0,
     totalRatings: 0,
     averageRating: 0,
+    recentUsers: [],
+    recentStores: [],
   });
 
   const fetchDashboard = async () => {
     try {
       const data = await getDashboardStats();
 
-      setStats({
-        totalUsers: data.totalUsers,
-        totalStores: data.totalStores,
-        totalRatings: data.totalRatings,
-        averageRating: data.averageRating || 0,
-      });
+      setStats(data);
     } catch (error) {
-      console.error("Failed to fetch dashboard:", error);
+      console.error(
+        "Failed to fetch dashboard:",
+        error
+      );
     }
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchDashboard();
   }, []);
 
@@ -52,8 +52,10 @@ function Dashboard() {
       <div className="dashboard-content">
         <Navbar />
 
-        {/* Statistics Cards */}
+        {/* Statistics */}
+
         <div className="stats-grid">
+
           <StatsCard
             title="Total Users"
             value={stats.totalUsers}
@@ -81,14 +83,28 @@ function Dashboard() {
             icon={<FaChartLine />}
             color="#8B5CF6"
           />
+
         </div>
 
         {/* Dashboard Grid */}
+
         <div className="dashboard-grid">
-          <Table />
-          <Chart />
+
+          <Table
+            users={stats.recentUsers}
+          />
+
+          <Chart
+  totalUsers={stats.totalUsers}
+  totalStores={stats.totalStores}
+  totalRatings={stats.totalRatings}
+  averageRating={stats.averageRating}
+/>
+
         </div>
+
       </div>
+
     </div>
   );
 }
