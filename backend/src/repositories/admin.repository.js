@@ -62,23 +62,61 @@ export const createStore = async (
 // =========================
 // Dashboard
 // =========================
+// =========================
+// Dashboard
+// =========================
 export const getDashboardStats = async () => {
-  const totalUsers = await pool.query(
-    "SELECT COUNT(*) FROM users"
-  );
+  const totalUsers = await pool.query(`
+    SELECT COUNT(*) FROM users
+  `);
 
-  const totalStores = await pool.query(
-    "SELECT COUNT(*) FROM stores"
-  );
+  const totalStores = await pool.query(`
+    SELECT COUNT(*) FROM stores
+  `);
 
-  const totalRatings = await pool.query(
-    "SELECT COUNT(*) FROM ratings"
-  );
+  const totalRatings = await pool.query(`
+    SELECT COUNT(*) FROM ratings
+  `);
+
+  const averageRating = await pool.query(`
+    SELECT
+      COALESCE(ROUND(AVG(rating),2),0) AS average_rating
+    FROM ratings
+  `);
+
+  const recentUsers = await pool.query(`
+    SELECT
+      id,
+      name,
+      email,
+      role
+    FROM users
+    ORDER BY id DESC
+    LIMIT 5
+  `);
+
+  const recentStores = await pool.query(`
+    SELECT
+      s.id,
+      s.name,
+      COALESCE(ROUND(AVG(r.rating),2),0) AS rating
+    FROM stores s
+    LEFT JOIN ratings r
+      ON s.id = r.store_id
+    GROUP BY s.id
+    ORDER BY s.id DESC
+    LIMIT 5
+  `);
 
   return {
     totalUsers: Number(totalUsers.rows[0].count),
     totalStores: Number(totalStores.rows[0].count),
     totalRatings: Number(totalRatings.rows[0].count),
+    averageRating: Number(
+      averageRating.rows[0].average_rating
+    ),
+    recentUsers: recentUsers.rows,
+    recentStores: recentStores.rows,
   };
 };
 
