@@ -5,14 +5,18 @@ import {
 } from "react-router-dom";
 
 import Login from "../pages/login/Login";
+import Register from "../pages/register/Register";
 
 import AdminDashboard from "../pages/admin/Dashboard";
 import OwnerDashboard from "../pages/owner/Dashboard";
 import UserDashboard from "../pages/user/Dashboard";
-import Register from "../pages/register/Register";
+
 import Users from "../pages/admin/users/Users";
 import Stores from "../pages/admin/stores/Stores";
+
 import ChangePassword from "../pages/ChangePassword/ChangePassword";
+
+import ProtectedRoute from "./ProtectedRoute";
 
 function AppRoutes() {
   return (
@@ -20,40 +24,88 @@ function AppRoutes() {
 
       <Routes>
 
+        {/* Public Routes */}
+
         <Route
           path="/"
           element={<Login />}
         />
+
         <Route
           path="/register"
           element={<Register />}
-         />
+        />
+
+        {/* Admin */}
 
         <Route
           path="/admin/dashboard"
-          element={<AdminDashboard />}
+          element={
+            <ProtectedRoute
+              allowedRole="ADMIN"
+            >
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
         />
+
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute
+              allowedRole="ADMIN"
+            >
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/stores"
+          element={
+            <ProtectedRoute
+              allowedRole="ADMIN"
+            >
+              <Stores />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Store Owner */}
 
         <Route
           path="/owner/dashboard"
-          element={<OwnerDashboard />}
+          element={
+            <ProtectedRoute
+              allowedRole="STORE_OWNER"
+            >
+              <OwnerDashboard />
+            </ProtectedRoute>
+          }
         />
+
+        {/* User */}
 
         <Route
           path="/user/dashboard"
-          element={<UserDashboard />}
+          element={
+            <ProtectedRoute
+              allowedRole="USER"
+            >
+              <UserDashboard />
+            </ProtectedRoute>
+          }
         />
-        <Route
-          path="/admin/users"
-          element={<Users />}
-        />
-        <Route
-          path="/admin/stores"
-          element={<Stores />}
-        />
+
+        {/* Shared */}
+
         <Route
           path="/change-password"
-         element={<ChangePassword />}
+          element={
+            <ProtectedRoute>
+              <ChangePassword />
+            </ProtectedRoute>
+          }
         />
 
       </Routes>
